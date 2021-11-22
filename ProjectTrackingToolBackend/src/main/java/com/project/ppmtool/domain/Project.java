@@ -3,12 +3,17 @@ package com.project.ppmtool.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class Project {
@@ -17,15 +22,30 @@ public class Project {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@NotBlank(message = "Project name is required")
 	private String projectName;
+	
+	// like a JIRA feature which gives us an identifier name based on projectName.
+	@NotBlank(message = "Project Identifier is required")
+	@Size(min = 4, max = 5) 
+	@Column(unique = true, updatable = false)
 	private String projectIdentifier; // Why is this attribute required?
+	
+	@NotBlank(message = "Project description is required")
 	private String description;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd") // test this 
 	private LocalDate start_date;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate end_date;
-
+	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime created_At;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updated_At;
-
+	
 	public Project() {
 	}
 	
