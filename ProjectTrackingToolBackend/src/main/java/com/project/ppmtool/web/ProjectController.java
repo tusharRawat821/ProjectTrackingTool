@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ppmtool.domain.Project;
+import com.project.ppmtool.services.MapValidationErrorService;
 import com.project.ppmtool.services.ProjectService;
 
 @RestController
@@ -24,6 +25,9 @@ public class ProjectController {
 	
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	private MapValidationErrorService mapValidationErrorService;
 	
 	/**
 	 * Spring official docs:
@@ -39,17 +43,8 @@ public class ProjectController {
 	@PostMapping("")
 	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result) {
 		
-		if(result.hasErrors()) {
-			/**
-			 * {"field" : "errorMsg",..} : send error in this format to our React front-end.
-			 * 
-			 */
-			Map<String, String> errorMap = new HashMap<>();
-			for(FieldError error: result.getFieldErrors()) {
-				errorMap.put(error.getField(), error.getDefaultMessage());
-			}
-			return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
-		}
+		ResponseEntity<?> entity = mapValidationErrorService.mapValidationError(result);
+		if(entity!=null) return entity;
 		
 		Project project1 = projectService.saveOrUpdateProject(project);
 		return new ResponseEntity<>(project1, HttpStatus.CREATED);
