@@ -12,7 +12,9 @@ import org.springframework.validation.FieldError;
 @Service
 public class MapValidationErrorService {
 	/**
-	 * Returns ResponseEntity<Map> with body as map of field errors 
+	 * Returns ResponseEntity<Map> with body as map of field errors.
+	 * This method only handles the validation errors enforced by javax.validation.* annotations.
+	 * if there's some @Column validations that's needs to be handled at DB level as that's hibernate/JPA exception
 	 * example {"field" : "errorMsg",..}
 	 * @param result
 	 */
