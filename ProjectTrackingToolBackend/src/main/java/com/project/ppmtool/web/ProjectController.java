@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +52,7 @@ public class ProjectController {
 	@GetMapping("/{projectId}")
 	public ResponseEntity<?> getProjectById(@PathVariable String projectId) {
 		Project project = projectService.findProjectByIdentifier(projectId.toUpperCase());
-		return new ResponseEntity(project, HttpStatus.OK);
+		return new ResponseEntity<>(project, HttpStatus.OK);
 	}
 	
 	@GetMapping("/all")
@@ -64,6 +65,15 @@ public class ProjectController {
 		projectService.deleteProjectByIdentifier(projectId.toUpperCase());
 		
 		return new ResponseEntity<>("Project with ID: '"+projectId+"' was deleted", HttpStatus.OK);
+	}
+	
+	@PutMapping("")
+	public ResponseEntity<?> updateProject(Project project, BindingResult result) {
+		ResponseEntity<?> entity = mapValidationErrorService.mapValidationError(result);
+		if(entity!=null) return entity;
+		
+		Project project1 = projectService.saveOrUpdateProject(project);
+		return new ResponseEntity<>(project1, HttpStatus.ACCEPTED);
 	}
 	
 }

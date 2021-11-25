@@ -28,13 +28,13 @@ public class Project {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
 	@NotBlank(message = "Project name is required")
 	private String projectName;
 	
 	// like a JIRA feature which gives us an identifier name based on projectName.
 	@NotBlank(message = "Project Identifier is required")
-	@Size(min = 4, max = 5) 
+	@Size(min = 4, max = 5)
 	@Column(unique = true, updatable = false)
 	private String projectIdentifier; // Why is this attribute required?
 	
