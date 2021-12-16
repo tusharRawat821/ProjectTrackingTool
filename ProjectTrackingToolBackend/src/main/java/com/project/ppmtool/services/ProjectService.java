@@ -16,6 +16,7 @@ public class ProjectService {
 		try {
 			// to remove the ambiguity of different casing here.
 			project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
+			// While saving the project to DB, hibernate validation takes place like unique-column-constraint on 'projectIdentifier'
 			return projectRepository.save(project);
 		}
 		catch (Exception ex) {
@@ -52,9 +53,17 @@ public class ProjectService {
 	/**
 	 * Caveat:
 	 * what if we pass an entity with partial values ? Will the other values gets null in DB ? : YES
-	 * So from react frontend we are never going to pass the null values for created_At and other arguments
+	 * So from react frontend we are never going to pass the null values for created_At and other arguments.
 	 */
-	public Project updateProject(Project project) {
-		return saveOrUpdateProject(project);
+	public Project updateProject(Project updatedProject) {
+		updatedProject.setProjectIdentifier(updatedProject.getProjectIdentifier().toUpperCase());
+		Project existingProject = projectRepository.findByProjectIdentifier(updatedProject.getProjectIdentifier().toUpperCase());
+		
+		if(existingProject == null) {
+			throw new ProjectIdException("Cannot update project as Project ID: '"+updatedProject.getProjectIdentifier()+"' does not exist");
+		}
+		
+		updatedProject.setId(existingProject.getId());
+		return projectRepository.save(updatedProject);
 	}
 }

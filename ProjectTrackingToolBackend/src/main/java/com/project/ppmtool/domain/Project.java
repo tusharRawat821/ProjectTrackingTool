@@ -35,7 +35,7 @@ public class Project {
 	// like a JIRA feature which gives us an identifier name based on projectName.
 	@NotBlank(message = "Project Identifier is required")
 	@Size(min = 4, max = 5)
-	@Column(unique = true, updatable = false)
+	@Column(unique = true, updatable = false) // if we try to update the projectIdentifier in : update query it won't update.
 	private String projectIdentifier; // Why is this attribute required?
 	
 	@NotBlank(message = "Project description is required")
